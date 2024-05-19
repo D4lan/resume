@@ -5,22 +5,25 @@ on:
       - site/**
 env:
   AWS_REGION : "us-west-2"
+  BUCKET_NAME: "dylan-resume-website"
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
 jobs:
-  TestOIDC:
+  SyncS3:
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: site/
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::689736139044:role/github-s3
-          role-session-name: s3Role
+          role-to-assume: arn:aws:iam::689736139044:role/github-resume-s3
+          role-session-name: s3ResumeRole
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Print S3 buckets
-        run: aws s3 ls
+      - name: Sync S3 bucket
+        run: aws s3 sync s3://${{ env.BUCKET_NAME }} site
