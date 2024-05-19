@@ -1,0 +1,26 @@
+name: Front End
+on:
+  push:
+    paths:
+      - site/**
+env:
+  AWS_REGION : "us-west-2"
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+jobs:
+  CreateResources:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::357171621133:role/github-s3
+          role-session-name: s3Role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Print S3 buckets
+        run: aws s3 ls
