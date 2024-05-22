@@ -1,10 +1,8 @@
 #For the provider URL: Use https://token.actions.githubusercontent.com
 #For the "Audience": Use sts.amazonaws.com
 name: Terraform Backend Bootstrap
-on:
-  push:
-    paths:
-      - "{{ env.DIR }}/**"
+on: workflow_dispatch
+
 env:
   DIR : "infra/tf_backend"
   AWS_REGION : "us-west-2"
@@ -34,7 +32,7 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: {{ env.GITHUB_ACTIONS_ROLE }}
+          role-to-assume: ${{ env.GITHUB_ACTIONS_ROLE }}
           role-session-name: s3ResumeRole
           aws-region: ${{ env.AWS_REGION }}
 
@@ -54,5 +52,5 @@ jobs:
 
         # On push to "main", deploy the Terraform infrastructure
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve -input=false
