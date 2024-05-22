@@ -1,9 +1,12 @@
-name: Front End
+#For the provider URL: Use https://token.actions.githubusercontent.com
+#For the "Audience": Use sts.amazonaws.com
+name: Sync Site Files
 on:
   push:
     paths:
-      - site/**
+      - "{{ env.DIR }}/**"
 env:
+  DIR : "infra/tf_backend"
   AWS_REGION : "us-west-2"
   BUCKET_NAME: "dylan-resume-website"
 permissions:
@@ -11,6 +14,7 @@ permissions:
       contents: read    # This is required for actions/checkout
 jobs:
   Sync-S3-Bucket:
+    name: 'Sync S3 Bucket'
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -18,7 +22,7 @@ jobs:
         with:
           sparse-checkout: site/
 
-      - name: configure aws credentials
+      - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::689736139044:role/github-resume-s3
