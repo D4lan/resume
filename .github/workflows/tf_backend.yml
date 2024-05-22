@@ -1,9 +1,8 @@
 #For the provider URL: Use https://token.actions.githubusercontent.com
 #For the "Audience": Use sts.amazonaws.com
-name: Terraform
+name: Terraform Backend Bootstrap
 on:
   push:
-    branches: [ main ]
     paths:
       - "{{ env.DIR }}/**"
 env:
