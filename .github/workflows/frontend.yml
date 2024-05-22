@@ -4,9 +4,8 @@ name: Sync Site Files
 on:
   push:
     paths:
-      - "{{ env.DIR }}/**"
+      - site/**
 env:
-  DIR : "infra/tf_backend"
   AWS_REGION : "us-west-2"
   BUCKET_NAME: "dylan-resume-website"
 permissions:
